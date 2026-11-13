@@ -1,0 +1,7 @@
+# Keep line endings stable across platforms. The Compose file embeds a bash
+# script that must reach the container with LF endings.
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.ico binary
