@@ -110,3 +110,9 @@ This setup is for local demonstration only.
 - The repository is frozen. The pinned versions will fall behind and will not be updated here.
 
 To report a security concern, see the [security policy](https://github.com/IT-Titans/elastic-kibana-example/security/policy).
+
+## License
+
+Copyright 2025 IT Titans GmbH
+
+Licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE).
