@@ -49,7 +49,7 @@ class Program
         {
             From = 0,
             Size = 10,
-            Query = new TermQuery("user") { Value = "stevejgordon" }
+            Query = new TermQuery { Field = "user", Value = "stevejgordon" }
         };
         var response3 = client.SearchAsync<Tweet>(request).Result; 
 
