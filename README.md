@@ -2,7 +2,7 @@
 
 A Docker Compose file that starts a single-node Elasticsearch cluster and Kibana on a local machine, with TLS on the Elasticsearch API and passwords on the built-in users. A small .NET console program shows how to index, read and search one document with the official Elasticsearch .NET client. The repository is demonstration material for getting a local stack running. It is not a deployment template.
 
-**Status:** Frozen. The repository was brought to a final state and archived; it receives no further updates, including security updates. Last verified: 2026-11-13 with Docker Compose v5.1.3 (`docker compose config`) and .NET SDK 10.0.404 (`dotnet build`, `dotnet run` without a cluster). The containers were not started for that verification, so the steps from `docker compose up` onwards are documented but were not run on that date.
+**Status:** Frozen. The repository was brought to a final state and archived; it receives no further updates, including security updates. Last verified: 2026-11-16 on Windows 11 with Docker Engine 29.4.1, Docker Compose v5.1.3 and .NET SDK 10.0.404, using the images `docker.elastic.co/elasticsearch/elasticsearch:9.5.6` and `docker.elastic.co/kibana/kibana:9.5.6`. The complete quick start was run: both services became healthy, Elasticsearch answered over TLS with the CA certificate, Kibana accepted the login, and the sample client indexed, read and found its document. `main/Dockerfile` was built (.NET runtime 10.0.15) and the image ran against the cluster. Two details differ from the steps as written: the Kibana login was made through its login endpoint, not in a browser, and `curl` received the password on the command line, not at its prompt.
 
 ## Prerequisites
 
@@ -42,6 +42,8 @@ The commands work in a POSIX shell and in PowerShell 7. Run them in the reposito
    ```
 
    `curl` asks for the password. It is the value of `ELASTIC_PASSWORD` in `.env`, which is the demo default `changeme` unless you changed it. The answer is a JSON document with the cluster name and version.
+
+   On Windows, `curl` is built on Schannel and stops with `the revocation status is unknown`, because the demo certificates name no revocation service. Add `--ssl-no-revoke` there. The server certificate is still checked against `ca.crt`.
 
 5. Open Kibana at <http://localhost:5601> and log in as `elastic` with the same password.
 
@@ -90,9 +92,9 @@ The sample client always connects to `https://localhost:9200` as `elastic`. Only
 
 ## Known limitations
 
-- The cluster has one node and no memory limits. The certificate authority is created on first start and lives in the `certs` volume.
-- The sample client searches immediately after indexing, without a refresh. On the first run the `query:` line can therefore be empty; a second run finds the document.
-- `main/Dockerfile` builds an image of the sample client. It is not referenced by `docker-compose.yml` and was not built for the last verification.
+- The cluster has one node and no memory limits. In the last verification the Elasticsearch container used about 8.8 GiB of the 15.4 GiB available to Docker. The certificate authority is created on first start and lives in the `certs` volume.
+- The sample client searches immediately after indexing, without asking for a refresh, so whether the `query:` line shows the message depends on Elasticsearch's refresh timing. In the last verification the first run already found the document.
+- `main/Dockerfile` builds an image of the sample client. It is not referenced by `docker-compose.yml`. The client always connects to `localhost:9200`, so a container started from the image only reaches the cluster when it shares the network namespace of `es01`.
 
 ## Origin of the material
 
