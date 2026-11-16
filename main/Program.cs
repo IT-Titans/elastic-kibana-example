@@ -9,8 +9,17 @@ class Program
 {
     static void Main(string[] args)
     {
+        // the password is not kept in the source; it is the ELASTIC_PASSWORD value from the .env file
+        var password = Environment.GetEnvironmentVariable("ELASTIC_PASSWORD");
+        if (string.IsNullOrEmpty(password))
+        {
+            Console.Error.WriteLine("Set the ELASTIC_PASSWORD environment variable to the value from your .env file.");
+            Environment.ExitCode = 1;
+            return;
+        }
+
         var settings = new ElasticsearchClientSettings(new Uri("https://localhost:9200"))
-            .Authentication(new BasicAuthentication("elastic", "changeme"))
+            .Authentication(new BasicAuthentication("elastic", password))
             // this disables the cert verification so that we can use our self-signed one
             .ServerCertificateValidationCallback((_, _, _, _) => true);
         
@@ -49,7 +58,7 @@ class Program
         {
             From = 0,
             Size = 10,
-            Query = new TermQuery("user") { Value = "stevejgordon" }
+            Query = new TermQuery { Field = "user", Value = "stevejgordon" }
         };
         var response3 = client.SearchAsync<Tweet>(request).Result; 
 

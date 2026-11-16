@@ -1,3 +1,10 @@
+# Derived from the Compose file of
+# https://github.com/elkninja/elastic-stack-docker-part-one (Apache-2.0),
+# the companion repository of the Elastic blog post linked in the README.
+# Changes: reduced to the setup, Elasticsearch and Kibana services. The
+# Metricbeat, Filebeat and Logstash services, their volumes, the "version"
+# key and the memory limits were removed.
+
 volumes:
   certs:
     driver: local

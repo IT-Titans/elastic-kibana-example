@@ -3,3 +3,14 @@ obj/
 /packages/
 riderModule.iml
 /_ReSharper.Caches/
+
+# Local environment file, created from .env.example
+.env
+
+# CA certificate copied out of the stack for the quick start
+ca.crt
+
+# IDE state
+.idea/
+.vs/
+*.user
